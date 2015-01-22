@@ -1,0 +1,15 @@
+<!DOCTYPE>
+<html>
+<head>
+</head>
+<body>
+  <form action= "/town" >
+    <input type= "text" name= "town" placeholder= "city">
+  </form>
+  <% if images %>
+  <% images.each do |image| %>
+  <img src= <%= image %>> </img>
+  <% end %>
+  <% end %>
+</body>
+</html>
