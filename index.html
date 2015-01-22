@@ -1,0 +1,85 @@
+<html>
+  <head>
+    <title>your senator</title>
+  </head>
+  <style>
+  input {
+    margin-bottom: 2%;
+  }
+  /*.clicked {
+    color: blue;
+  }*/
+  li {
+    cursor: pointer;
+  }
+  </style>
+  <body>
+    <input type= "text" placeholder= "location">
+    <script>
+      var input = document.querySelector("input");
+      input.addEventListener("keydown", function(evt) {
+        if(evt.keyCode=== 13) {
+          var data = input.value;
+          input.value = ""
+          var format = data.split(" ")
+          var final = format.join("+")
+          var url = "https://maps.googleapis.com/maps/api/geocode/json?address="+final+"&key=your api key"
+          var xhr = new XMLHttpRequest();
+          xhr.addEventListener('load', function(e) {
+            var response = JSON.parse(xhr.responseText)
+            var latitude = response.results[0].geometry.location.lat
+            var longitude = response.results[0].geometry.location.lng
+
+            callSunlight(latitude,longitude);
+
+          })
+          xhr.open("GET", url);
+          xhr.send();
+        }
+      })
+      var callGoogle = function(input) {
+
+      }
+
+      var callSunlight = function(lat,long) {
+        var url2 = "https://congress.api.sunlightfoundation.com/legislators/locate?latitude="+lat+"&longitude="+long+"&apikey=your api key"
+        var xhr2 = new XMLHttpRequest();
+        xhr2.addEventListener('load', function(e) {
+          var response = JSON.parse(xhr2.responseText);
+          var filter = response.results.filter(function(each) {
+            return each.title == "Sen"
+          })
+          console.log(filter);
+          createUlElement(filter);
+        })
+        xhr2.open("GET",url2);
+        xhr2.send();
+      }
+
+      var createUlElement = function(array) {
+        var uL = document.createElement("ul");
+        array.forEach(function(senator) {
+          var body = document.querySelector("body");
+          var li = document.createElement("li");
+          li.innerHTML = senator.last_name
+          uL.appendChild(li);
+          li.addEventListener("click", function() {
+            // this.setAttribute("class", "clicked");
+            selected(senator,body)
+          })
+          body.appendChild(uL);
+        })
+      }
+
+      var selected = function(obj,body) {
+        console.log(obj);
+        var uL = document.querySelector('ul');
+        body.removeChild(uL)
+        var li = document.createElement("li")
+        li.innerHTML= obj.twitter_id
+        body.appendChild(li);
+      }
+
+    </script>
+  </body>
+</html>
